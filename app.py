@@ -2,52 +2,54 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# 1. Professional Setup
-st.set_page_config(page_title="MPC Pulse Dashboard", layout="wide")
+# 1. Dashboard Layout & Styling
+st.set_page_config(page_title="RBI MPC Pulse", layout="wide")
+st.title("🏦 MPC Pulse: Interactive Policy Simulator")
+st.markdown("---")
 
-# 2. Title & Professional Branding
-st.title("📊 MPC Pulse: Monetary Transmission Dashboard")
-st.markdown("### *Analyzing Asymmetric Policy Impacts on Indian Banking*")
-st.caption("Research Project for RBI Internship Selection | Focus: Panel Quantile Regression")
-
-# 3. The Control Panel (Sidebar)
-st.sidebar.header("Policy Control Room")
-st.sidebar.info("Adjust the Repo Rate to see how it hits different bank 'Quantiles' (Small vs Large banks).")
-
+# 2. THE SLIDER (The 'Brain' of your website)
+# This is what the RBI panel will play with.
+st.sidebar.header("Control Panel")
+st.sidebar.write("Adjust the Repo Rate to simulate a Monetary Policy shock.")
 repo_rate = st.sidebar.slider("Current Repo Rate (%)", 4.0, 10.0, 6.50, 0.25)
-shock = st.sidebar.radio("Shock Type", ["Rate Hike (Contractionary)", "Rate Cut (Expansionary)"])
 
-# 4. The 'Eco-Logic' (The Math)
-# Hikes hit harder (-1.8) than cuts help (+1.1) -> This is the 'Asymmetry'
-if "Hike" in shock:
-    factor = -1.8
+# 3. THE LIVE MATH (Economics + Education Logic)
+# We calculate 'Impact' based on your slider input
+base_credit = 12.0  # Normal credit growth
+# The 'Asymmetry': Hikes (above 6.5) hit harder than cuts help
+if repo_rate > 6.5:
+    impact = (repo_rate - 6.5) * -2.5  # Heavy hit for hikes
 else:
-    factor = 1.1
+    impact = (6.5 - repo_rate) * 1.2   # Mild boost for cuts
 
-# 5. Dashboard Layout
-col1, col2 = st.columns([2, 1])
+current_growth = base_credit + impact
+
+# 4. BIG INTERACTIVE NUMBERS (These change when you slide!)
+col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.subheader("Interactive Transmission Map")
-    # Data showing how different banks react
-    df = pd.DataFrame({
-        "Bank Group": ["Small Banks (High NPA)", "Mid-Size Banks", "Large Banks (Top Tier)"],
-        "Credit Growth Impact (%)": [factor * 1.6, factor * 1.0, factor * 0.6]
-    })
-    fig = px.bar(df, x="Bank Group", y="Credit Growth Impact (%)", 
-                 color="Bank Group", text_auto='.2f',
-                 color_discrete_sequence=px.colors.qualitative.Prism)
-    st.plotly_chart(fig, use_container_width=True)
+    st.metric(label="Simulated Repo Rate", value=f"{repo_rate}%", delta=f"{repo_rate - 6.5:.2f}%")
 
 with col2:
-    st.subheader("Policy Insights")
-    st.write(f"**Current Scenario:** {shock}")
-    st.write(f"**Repo Rate:** {repo_rate}%")
-    
-    st.warning("⚠️ **Asymmetry Detected:** Notice how Small Banks (High NPA) are affected twice as much as Large Banks. This is why 'Uniform' policy is a risk.")
-    
-    st.divider()
-    st.markdown("#### 🎓 Why this matters?")
-    st.write("Using my background in **Education**, I've designed this to simplify complex **Econometrics** for policy-making.")
+    # This color changes based on the growth!
+    color = "normal" if current_growth > 10 else "inverse"
+    st.metric(label="Predicted Bank Credit Growth", value=f"{current_growth:.2f}%", delta=f"{impact:.2f}%", delta_color=color)
 
-st.success("✅ This dashboard proves that Monetary Transmission is not linear in India.")
+with col3:
+    st.metric(label="Transmission Efficiency", value="High" if repo_rate > 6.5 else "Moderate")
+
+# 5. THE GRAPH (That also reacts to the slider)
+st.markdown("### Visualizing the Transmission")
+chart_data = pd.DataFrame({
+    "Sector": ["Retail Loans", "SME Loans", "Corporate Loans"],
+    "Growth Rate (%)": [current_growth * 1.1, current_growth * 0.8, current_growth * 0.95]
+})
+
+fig = px.bar(chart_data, x="Sector", y="Growth Rate (%)", 
+             range_y=[0, 20], color="Sector",
+             title=f"Impact of {repo_rate}% Rate on Different Sectors")
+st.plotly_chart(fig, use_container_width=True)
+
+# 6. PITCH (Education + Economics)
+st.info(f"**Researcher's Insight:** At **{repo_rate}%**, our model shows that SMEs are the most vulnerable. As an Educator, I've designed this to simplify complex MPC decisions into visible risks.")
+
