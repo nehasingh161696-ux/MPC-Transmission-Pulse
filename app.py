@@ -130,3 +130,13 @@ st.plotly_chart(fig_line, use_container_width=True)
 # 7. TECHNICAL FOOTER
 st.markdown("---")
 st.caption("STATISTICAL DISCLOSURE: Data modeling utilizes high-frequency RBI DBIE reporting frameworks.")
+
+st.markdown("---")
+# Professional Data Export
+csv = projection_df.to_csv(index=False).encode('utf-8')
+st.download_button(
+    label=" DOWNLOAD SYSTEM GENERATED DATA (CSV)",
+    data=csv,
+    file_name='MPC_Transmission_Data.csv',
+    mime='text/csv',
+)
