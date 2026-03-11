@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 # 1. EMULATE HIGH-END APP UI
-st.set_page_config(page_title="MPC Pulse | Terminal", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="MPC Pulse | Terminal", layout="wide")
 
 # CUSTOM CSS FOR THE 'APP' LOOK
 st.markdown("""
@@ -27,7 +27,7 @@ with col_text:
 st.markdown("---")
 
 # 3. INTERACTIVE SIDEBAR (THE ENGINE)
-st.sidebar.markdown("### 🛠️ POLICY ENGINE")
+st.sidebar.markdown("###  POLICY ENGINE")
 repo_rate = st.sidebar.select_slider(
     "ADJUST REPO RATE (%)",
     options=[4.0, 4.25, 4.5, 5.0, 5.5, 6.0, 6.25, 6.5, 6.75, 7.0, 7.5, 8.0, 9.0, 10.0],
