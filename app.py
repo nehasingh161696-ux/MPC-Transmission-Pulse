@@ -4,17 +4,16 @@ import plotly.express as px
 
 # 1. Dashboard Layout & Styling
 st.set_page_config(page_title="RBI MPC Pulse", layout="wide")
-st.title("🏦 MPC Pulse: Interactive Policy Simulator")
+st.title("MPC Pulse: Interactive Policy Simulator")
 st.markdown("---")
 
-# 2. THE SLIDER (The 'Brain' of your website)
-# This is what the RBI panel will play with.
+# 2. THE SLIDER (The 'Brain' of the website)
+# This is what the user will play with.
 st.sidebar.header("Control Panel")
 st.sidebar.write("Adjust the Repo Rate to simulate a Monetary Policy shock.")
 repo_rate = st.sidebar.slider("Current Repo Rate (%)", 4.0, 10.0, 6.50, 0.25)
 
-# 3. THE LIVE MATH (Economics + Education Logic)
-# We calculate 'Impact' based on your slider input
+# We calculate 'Impact' based on our slider input
 base_credit = 12.0  # Normal credit growth
 # The 'Asymmetry': Hikes (above 6.5) hit harder than cuts help
 if repo_rate > 6.5:
@@ -50,6 +49,5 @@ fig = px.bar(chart_data, x="Sector", y="Growth Rate (%)",
              title=f"Impact of {repo_rate}% Rate on Different Sectors")
 st.plotly_chart(fig, use_container_width=True)
 
-# 6. PITCH (Education + Economics)
-st.info(f"**Researcher's Insight:** At **{repo_rate}%**, our model shows that SMEs are the most vulnerable. As an Educator, I've designed this to simplify complex MPC decisions into visible risks.")
+st.info(f"**Researcher's Insight:** At **{repo_rate}%**, our model shows that SMEs are the most vulnerable. I've designed this to simplify complex MPC decisions into visible risks.")
 
